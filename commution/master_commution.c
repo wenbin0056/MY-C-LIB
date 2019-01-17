@@ -2,66 +2,92 @@
 
 
 #include <stdio.h>
+#include "commution_common.h"
 
 
 
-typedef struct
-{
-	APP_ID_1,
-	APP_ID_2,
-	APP_ID_3,
-	APP_ID_4,	
-	
-	APP_ID_MAX,	
-
-	
-}APP_ID_E;
-
-
-
-typedef struct
-{
-	
-}PresemtatopmPackT;
 
 typedef enum
 {
-	USER_MASTER_CMD_READY,
-	USER_MASTER_CMD_GETDATA,
-	USER_MASTER_CMD_SENDCMD_CMD1,
-	USER_MASTER_CMD_SENDCMD_CMD2,	
-	USER_MASTER_CMD_SENDCMD_CMD3,		
+	USER_CMD_SENDDATA,
+	USER_CMD_REQUIREDATA,
+
+	USER_CMD_MAX,			
 		
-}USER_MASTER_CMD;
+}USER_CMD_E;
 
 
 
-
-typedef enum
-{
-}MASTER_CMD;
 
 //======================USER SAMPLE==============================
-int USER_SAMPLE_FUN()
+int USER_SAMPLE_FUN(APP_ID_E appId)
 {
 	int ret = 0;
 	
-	ret = COMMUTION_WB_init(APP_ID_1);
+	ret = COMMUTION_WB_init(appId);
 	if(ret != 0)
 	{
 		printf("err %s:%d\n",__func__, __LINE__);
 		return -1;
 	}
+	unsigned char tx_buff[128] = {0};
+	unsigned int tx_len = 128;
+	unsigned char rx_buff[128] = {0};
+	unsigned int rx_len = 128;
 
+	PRESENTATION_sendPack(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
 	
-	
-	
+	return ret;
 }
 
 //============================================================
+
+
+static CommutionStructT  CommutionStruct;
+
 int COMMUTION_WB_init(APP_ID_E appID)
 {
-	
+	if(appID > APP_ID_MAX)
+	{
+		printf("param err %s:%d\n",__func__, __LINE__);
+		return -1;
+	}
+
+	CommutionStruct.pTxBuff[appID] = malloc(MAX_TX_BUFF_SIZE);
+	if(!CommutionStruct.pTxBuff[appID)
+	{
+		printf("malloc err %s:%d\n",__func__, __LINE__);
+		return -1;		
+	}
+
+	CommutionStruct.pRxBuff[appID] = malloc(MAX_RX_BUFF_SIZE);	
+	if(!CommutionStruct.pTxBuff[appID)
+	{
+		printf("malloc err %s:%d\n",__func__, __LINE__);
+		return -1;		
+	}	
+
+	CommutionStruct.TxBuffLen[appID] = 0;
+	CommutionStruct.RxBuffLen[appID] = 0;
+	CommutionStruct.CurrentLayer[appID] = COMMUTION_LAYER_USER;
+	CommutionStruct.bInit[appID] = 1;	
+
+	return 0;
+}
+
+int COMMUTION_WB_deInit(APP_ID_E appID)
+{
+	if(appID > APP_ID_MAX)
+	{
+		printf("param err %s:%d\n",__func__, __LINE__);
+		return -1;
+	}
+
+	free(CommutionStruct.pTxBuff[appID]);
+	free(CommutionStruct.pRxBuff[appID]);
+	CommutionStruct.bInit[appID] = 0;	
+
+	return 0;
 }
 
 
@@ -72,14 +98,28 @@ int PRESENTATION_recvPack()
 	
 }
 
-int PRESENTATION_sendPack()
+int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
 {
 	
+	
+	return 0;
 }
 
 
 
 //======================SESSION LAYER=====================
+
+int SESSION_recvPack()
+{
+	
+}
+
+int SESSION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
+{
+	
+	
+	return 0;
+}
 
 
 
