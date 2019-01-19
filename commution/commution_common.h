@@ -3,7 +3,8 @@
 #ifndef __COMMUTION_COMMON_H__
 #define __COMMUTION_COMMON_H__
 
-
+#define BYTE0(appId)	(appId)&0xff
+#define BYTE1(appId)	(appId>>8)&0xff
 
 typedef struct
 {
@@ -75,6 +76,10 @@ typedef struct
 	unsigned int TxBuffLen[MAX_APPID];	
 	unsigned char *pRxBuff[MAX_APPID];
 	unsigned int RxBuffLen[MAX_APPID];	
+
+	unsigned char *pRxTempBuff;
+	unsigned char *pTxTempBuff;
+	unsigned char bTempBuffInit;
 	
 	
 }CommutionStructT;

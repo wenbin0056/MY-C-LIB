@@ -47,6 +47,22 @@ static CommutionStructT  CommutionStruct;
 
 int COMMUTION_WB_init(APP_ID_E appID)
 {
+	if(CommutionStruct.bTempBuffInit == 0)
+	{
+		CommutionStruct.pRxTempBuff= malloc(MAX_TX_BUFF_SIZE);
+		CommutionStruct.pTxTempBuff= malloc(MAX_TX_BUFF_SIZE);		
+		if(!CommutionStruct.pRxTempBuff || !CommutionStruct.pTxTempBuff)
+		{
+			return -1;
+		}
+		CommutionStruct.bTempBuffInit = 1; 
+	}
+	
+	if(CommutionStruct.bInit[appID] == 1)
+	{
+		return 0;
+	}
+
 	if(appID > APP_ID_MAX)
 	{
 		printf("param err %s:%d\n",__func__, __LINE__);
@@ -77,6 +93,19 @@ int COMMUTION_WB_init(APP_ID_E appID)
 
 int COMMUTION_WB_deInit(APP_ID_E appID)
 {
+	if(CommutionStruct.bTempBuffInit == 1)
+	{
+		free(CommutionStruct.pRxTempBuff);
+		free(CommutionStruct.pTxTempBuff);		
+
+		CommutionStruct.bTempBuffInit = 0; 
+	}
+	
+	if(CommutionStruct.bInit[appID] == 0)
+	{
+		return 0;
+	}
+	
 	if(appID > APP_ID_MAX)
 	{
 		printf("param err %s:%d\n",__func__, __LINE__);
@@ -98,10 +127,25 @@ int PRESENTATION_recvPack()
 	
 }
 
+
 int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
 {
-	
-	
+	if(0 == CommutionStruct.bInit[appID])
+	{
+		printf("param err %s:%d\n",__func__, __LINE__);
+		return -1;		
+	}
+
+	CommutionStruct.pTxBuff[appId][0] = BYTE0(appId);
+	CommutionStruct.pTxBuff[appId][1] = BYTE1(appId);	
+	memcpy(CommutionStruct.pTxBuff + 2, SendBuff, SbuffLen);
+	CommutionStruct.TxBuffLen[appId] = SbuffLen + 2;
+	CommutionStruct.pRxBuff[appId] = RxBuff;
+	CommutionStruct.RxBuffLen[appId] = RbuffLen;	
+
+	SESSION_sendPack(appId);
+
+	SESSION_recvPack();
 	return 0;
 }
 
@@ -109,12 +153,13 @@ int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendB
 
 //======================SESSION LAYER=====================
 
+
 int SESSION_recvPack()
 {
-	
+	return 0;	
 }
 
-int SESSION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
+int SESSION_sendPack(APP_ID_E appId)
 {
 	
 	
@@ -126,31 +171,37 @@ int SESSION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, 
 
 //======================TRANSPORT LAYER=====================
 
+int Transport_sendPack()
+{
+	return 0;
+}
 
-
-
+int Transport_recvPack()
+{
+	return 0;	
+}
 //======================DATA LIN LAYER=====================
 // send frame by frame, if slave respond err, send again.
 // control bit flow 
 int DATA_LINK_sendFrame()
 {
-	
+	return 0;	
 }
 
 
 int DATA_LINK_sendAck()
 {
-	
+	return 0;	
 }
 
 int DATA_LINK_RecvFrame()
 {
-	
+	return 0;
 }
 
 int DATA_LINK_recvAck()
 {
-	
+	return 0;	
 }
 
 
@@ -159,10 +210,10 @@ int DATA_LINK_recvAck()
 
 int Phy_send_data(char *pbuff, unsigned int size)
 {
-	
+	return 0;	
 }
 
 int Phy_recv_data(char *pbuff, unsigned int size)
 {
-	
+	return 0;	
 }
