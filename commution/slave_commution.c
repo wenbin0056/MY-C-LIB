@@ -46,7 +46,9 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 	unsigned char rx_buff[128] = {0};
 	unsigned int rx_len = 128;
 
-	PRESENTATION_sendPack(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
+	//PRESENTATION_sendPack(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
+
+	ret = PRESENTATION_recvPack(appId);
 	
 	return ret;
 }
@@ -183,8 +185,20 @@ void * SlaveRecvFun(void *parg)
 }
 
 //======================PRESENTATION LAYER=====================
+int PRESENTATION_tryPack(APP_ID_E appId)
+{
+	int ret = 0;
+	
+	ret =SESSION_tryRecvPack(appId);
+	if(ret < 0)
+	{
+		return -1;
+	}
+		
 
-int PRESENTATION_recvPack()
+}
+
+int PRESENTATION_recvPack(APP_ID_E appId)
 {
 	
 }
@@ -214,7 +228,17 @@ int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendB
 
 
 //======================SESSION LAYER=====================
-
+int SESSION_tryRecvPack(APP_ID_E appId)
+{
+	int ret = 0;
+	
+	ret = Transport_tryRecvPack();
+	if(ret < 0)
+	{
+		return -1;
+	}	
+	return 0;
+}
 
 int SESSION_recvPack()
 {
@@ -241,6 +265,12 @@ int Transport_sendPack(APP_ID_E appId, unsigned short sessionID)
 	DATA_LINK_sendFrame(appId);
 	
 	return 0;
+}
+
+int Transport_tryRecvPack(APP_ID_E appId)
+{
+	DATA_LINK_tryRecvAck(appId);
+	return 0;	
 }
 
 int Transport_recvPack()
@@ -301,6 +331,13 @@ int DATA_LINK_recvAck(APP_ID_E appId)
 	return 0;	
 }
 
+
+int DATA_LINK_tryRecvFrame(APP_ID_E appId)
+{
+	
+	Phy_recv_data(CommutionStruct.pRxTempBuff, );
+	
+}
 
 
 //======================PHY LAYER=====================

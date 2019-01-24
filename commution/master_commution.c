@@ -1,20 +1,18 @@
 
 
 
+
+
+
 #include <stdio.h>
 #include "commution_common.h"
 
 
 
 
-typedef enum
-{
-	USER_CMD_SENDDATA,
-	USER_CMD_REQUIREDATA,
 
-	USER_CMD_MAX,			
-		
-}USER_CMD_E;
+
+
 
 
 #define RX_PACK_HEAD_LEN	sizeof(PACK_HEADER_T)
@@ -39,7 +37,16 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 	unsigned char rx_buff[128] = {0};
 	unsigned int rx_len = 128;
 
-	PRESENTATION_sendPack(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
+	//PRESENTATION_sendPackAndRecv(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
+
+	while(1)
+	{
+		
+		PRESENTATION_sendPack(appId,USER_CMD_SENDCMD, tx_buff, tx_len);
+
+		usleep(1000*1000);
+	}
+
 	
 	return ret;
 }
@@ -133,8 +140,27 @@ int PRESENTATION_recvPack()
 	
 }
 
+int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen)
+{
+	if(0 == CommutionStruct.bInit[appID])
+	{
+		printf("param err %s:%d\n",__func__, __LINE__);
+		return -1;		
+	}
 
-int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
+	CommutionStruct.packHeader[appId].AppID =appId;
+	memcpy(CommutionStruct.pTxBuff, SendBuff, SbuffLen);
+	CommutionStruct.TxBuffLen[appId] = SbuffLen;
+
+	CommutionStruct.RxpackHeader[appId].PackCmdID = cmdID;
+	
+	SESSION_sendPack(appId);
+	
+	return 0;
+}
+
+
+int PRESENTATION_sendPackAndRecv(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendBuff, unsigned int SbuffLen, unsigned char *RxBuff,unsigned int RbuffLen)
 {
 	
 	if(0 == CommutionStruct.bInit[appID])
@@ -148,6 +174,7 @@ int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendB
 	CommutionStruct.TxBuffLen[appId] = SbuffLen;
 	CommutionStruct.pRxBuff[appId] = RxBuff;
 	CommutionStruct.RxBuffLen[appId] = RbuffLen;	
+	
 	
 	SESSION_sendPack(appId);
 

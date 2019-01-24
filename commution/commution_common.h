@@ -35,15 +35,35 @@ typedef struct
 
 typedef enum
 {
-	USER_MASTER_CMD_READY,
-	USER_MASTER_CMD_GETDATA,
-	USER_MASTER_CMD_SENDCMD_CMD1,
-	USER_MASTER_CMD_SENDCMD_CMD2,	
-	USER_MASTER_CMD_SENDCMD_CMD3,		
+	//CMD_ID_WHIOUT_DATA
+	USER_CMD_ID_START_WORK,
+	USER_CMD_ID_STOP_WORK,		
+	USER_CMD_ID_RESET,
+
+	//
+	USER_CMD_SENDDATA,
+
+	//
+	USER_CMD_REQUIRE_SLAVE_MACHINE_STATE,
+
+	USER_CMD_MAX,			
 		
-}USER_MASTER_CMD;
+}USER_CMD_E;
 
 
+typedef enum 
+{
+	MACHINE_STATE_RUNNING,
+	MACHINE_STATE_SLEEP,
+
+	MACHINE_STATE_MAX,
+	
+}E_MACHINE_STATE;
+
+typedef struct 
+{
+		
+}SLAVE_MACHINE_STATE_T;
 
 
 typedef enum
@@ -72,6 +92,7 @@ typedef struct
 {
 	unsigned short AppID;
 	unsigned short SessionID;
+	unsigned short PackCmdID;
 	
 }PACK_HEADER_T;
 
