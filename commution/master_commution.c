@@ -11,15 +11,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 //======================USER SAMPLE==============================
 int USER_SAMPLE_FUN(APP_ID_E appId)
 {
@@ -45,7 +36,7 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 	{
 		SLAVE_MACHINE_STATE_T slaveMachineState = {0};
 		
-		ret = PRESENTATION_sendPack(appId,USER_CMD_REQUIRE_SLAVE_MACHINE_STATE, NULL, NULL, &slaveMachineState, sizeof(SLAVE_MACHINE_STATE_T));
+		ret = PRESENTATION_sendPackAndRecv(appId,USER_CMD_REQUIRE_SLAVE_MACHINE_STATE, NULL, NULL, &slaveMachineState, sizeof(SLAVE_MACHINE_STATE_T));
 		if(0 == ret)
 		{
 			printf("[%d]slave state: %d\n",cout++, slaveMachineState.machine_state);
