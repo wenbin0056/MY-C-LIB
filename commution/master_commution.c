@@ -59,6 +59,8 @@ int COMMUTION_WB_init(APP_ID_E appID)
 		{
 			return -1;
 		}
+		CommutionStruct.RxTempBuffLen = MAX_TX_BUFF_SIZE;
+		CommutionStruct.TxTempBuffLen = MAX_TX_BUFF_SIZE;		
 		CommutionStruct.bTempBuffInit = 1; 
 	}
 	
@@ -197,16 +199,19 @@ int DATA_LINK_sendFrame(APP_ID_E appId)
 {
 	unsigned int pos = 0;
 	char buff[RX_PACK_HEAD_LEN] = {0};
+	
+	memset(CommutionStruct.pTxTempBuff, 0, CommutionStruct.RxTempBuffLen);
+
 	unsigned int ret = 0;
 	
 
-	buff[pos++] = BYTE0(CommutionStruct.TxpackHeader[appId].AppID);
-	buff[pos++] = BYTE1(CommutionStruct.TxpackHeader[appId].AppID);	
+	CommutionStruct.pTxTempBuff[pos++] = BYTE0(CommutionStruct.TxpackHeader[appId].AppID);
+	CommutionStruct.pTxTempBuff[pos++] = BYTE1(CommutionStruct.TxpackHeader[appId].AppID);	
 
-	buff[pos++] = BYTE0(CommutionStruct.TxpackHeader[appId].SessionID);
-	buff[pos++] = BYTE1(CommutionStruct.TxpackHeader[appId].SessionID);	
+	CommutionStruct.pTxTempBuff[pos++] = BYTE0(CommutionStruct.TxpackHeader[appId].SessionID);
+	CommutionStruct.pTxTempBuff[pos++] = BYTE1(CommutionStruct.TxpackHeader[appId].SessionID);	
 	
-	Phy_send_data(buff, RX_PACK_HEAD_LEN);
+	Phy_send_data(CommutionStruct.pTxTempBuff, pos);
 	Phy_send_data(CommutionStruct.pTxBuff[appId], CommutionStruct.TxBuffLen[appId]);	
 
 	ret = DATA_LINK_recvAck(appId);

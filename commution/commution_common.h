@@ -65,8 +65,8 @@ typedef enum
 }COMMUTION_LAYER_E;
 
 #define MAX_APPID 10
-#define MAX_TX_BUFF_SIZE	1024*1024
-#define MAX_RX_BUFF_SIZE	1024*1024
+#define MAX_TX_BUFF_SIZE	1024
+#define MAX_RX_BUFF_SIZE	1024
 
 typedef struct
 {
@@ -94,7 +94,9 @@ typedef struct
 
 	unsigned char *pRxTempBuff;
 	unsigned char *pTxTempBuff;
-	unsigned char bTempBuffInit;
+	unsigned short RxTempBuffLen;
+	unsigned short TxTempBuffLen;
+	unsigned char bTempBuffInit;	
 
 	ARK_PACK_T RxAckPack[MAX_APPID];
 	ARK_PACK_T TxAckPack[MAX_APPID];	
