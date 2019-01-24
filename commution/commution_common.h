@@ -68,19 +68,36 @@ typedef enum
 #define MAX_TX_BUFF_SIZE	1024*1024
 #define MAX_RX_BUFF_SIZE	1024*1024
 
+typedef struct
+{
+	unsigned short AppID;
+	unsigned short SessionID;
+	
+}PACK_HEADER_T;
+
+typedef struct 
+{
+	
+}ARK_PACK_T;
+
+
 typedef struct 
 {
 	unsigned char bInit[MAX_APPID];
 	unsigned char CurrentLayer[MAX_APPID];	
+	PACK_HEADER_T TxpackHeader[MAX_APPID];
 	unsigned char *pTxBuff[MAX_APPID];
 	unsigned int TxBuffLen[MAX_APPID];	
+	PACK_HEADER_T RxpackHeader[MAX_APPID];		
 	unsigned char *pRxBuff[MAX_APPID];
 	unsigned int RxBuffLen[MAX_APPID];	
 
 	unsigned char *pRxTempBuff;
 	unsigned char *pTxTempBuff;
 	unsigned char bTempBuffInit;
-	
+
+	ARK_PACK_T RxAckPack[MAX_APPID];
+	ARK_PACK_T TxAckPack[MAX_APPID];	
 	
 }CommutionStructT;
 
