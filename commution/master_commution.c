@@ -15,11 +15,10 @@
 
 
 
-#define RX_PACK_HEAD_LEN	sizeof(PACK_HEADER_T)
-#define TX_PACK_HEAD_LEN	sizeof(PACK_HEADER_T);
 
-#define RX_ACK_PACK_HEAD_LEN	sizeof(ARK_PACK_T)
-#define TX_ACK_PACK_HEAD_LEN	sizeof(ARK_PACK_T);
+
+
+
 
 //======================USER SAMPLE==============================
 int USER_SAMPLE_FUN(APP_ID_E appId)
@@ -36,13 +35,26 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 	unsigned int tx_len = 128;
 	unsigned char rx_buff[128] = {0};
 	unsigned int rx_len = 128;
+	unsigned int cout = 0;
 
 	//PRESENTATION_sendPackAndRecv(appId,USER_CMD_SENDDATA, tx_buff, tx_len, rx_buff, rx_len);
 
+	PRESENTATION_sendPack(appId,USER_CMD_ID_RESET, NULL, NULL);
+	
 	while(1)
 	{
+		SLAVE_MACHINE_STATE_T slaveMachineState = {0};
 		
-		PRESENTATION_sendPack(appId,USER_CMD_SENDCMD, tx_buff, tx_len);
+		ret = PRESENTATION_sendPack(appId,USER_CMD_REQUIRE_SLAVE_MACHINE_STATE, NULL, NULL, &slaveMachineState, sizeof(SLAVE_MACHINE_STATE_T));
+		if(0 == ret)
+		{
+			printf("[%d]slave state: %d\n",cout++, slaveMachineState.machine_state);
+		}
+		else
+		{
+			printf("err %s:%d\n",__func__, __LINE__);
+			return -1;
+		}
 
 		usleep(1000*1000);
 	}

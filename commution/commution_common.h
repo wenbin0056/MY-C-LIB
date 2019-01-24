@@ -3,8 +3,34 @@
 #ifndef __COMMUTION_COMMON_H__
 #define __COMMUTION_COMMON_H__
 
-#define BYTE0(appId)	(appId)&0xff
-#define BYTE1(appId)	(appId>>8)&0xff
+
+
+typedef struct
+{
+	unsigned short AppID;
+	unsigned short SessionID;
+	unsigned short PackCmdID;
+	
+}PACK_HEADER_T;
+
+
+typedef struct 
+{
+	
+}ARK_PACK_T;
+
+
+
+#define BYTE0(appId)					(appId)&0xff
+#define BYTE1(appId)					(appId>>8)&0xff
+#define RX_PACK_HEAD_LEN			sizeof(PACK_HEADER_T)
+#define TX_PACK_HEAD_LEN			sizeof(PACK_HEADER_T);
+#define RX_ACK_PACK_HEAD_LEN		sizeof(ARK_PACK_T)
+#define TX_ACK_PACK_HEAD_LEN		sizeof(ARK_PACK_T);
+#define MAX_APPID 					10
+#define MAX_TX_BUFF_SIZE			1024
+#define MAX_RX_BUFF_SIZE			1024
+
 
 typedef struct
 {
@@ -13,25 +39,15 @@ typedef struct
 	APP_ID_3,
 	APP_ID_4,	
 	
-	APP_ID_MAX,	
-
-	
+	APP_ID_MAX,		
 }APP_ID_E;
-
-
-
-
-typedef struct
-{
-	unsigned char CmdID;
-
-};
 
 
 typedef struct
 {
 	
 }PresemtatopmPackT;
+
 
 typedef enum
 {
@@ -60,9 +76,12 @@ typedef enum
 	
 }E_MACHINE_STATE;
 
+
+
 typedef struct 
 {
-		
+	E_MACHINE_STATE machine_state;
+	
 }SLAVE_MACHINE_STATE_T;
 
 
@@ -84,22 +103,8 @@ typedef enum
 	
 }COMMUTION_LAYER_E;
 
-#define MAX_APPID 10
-#define MAX_TX_BUFF_SIZE	1024
-#define MAX_RX_BUFF_SIZE	1024
 
-typedef struct
-{
-	unsigned short AppID;
-	unsigned short SessionID;
-	unsigned short PackCmdID;
-	
-}PACK_HEADER_T;
 
-typedef struct 
-{
-	
-}ARK_PACK_T;
 
 
 typedef struct 
