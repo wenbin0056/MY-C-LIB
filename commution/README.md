@@ -8,9 +8,29 @@
 
 
 
-流程
->
-- 
+##### 发包流程
+
+表示层
+> appID CMID DATA        ;appID:决定那个应用的，数据解析
+会话层
+> appID CMID SESSION DATA ;SESSION：决定哪次会话的，收到的包进行会话ID校验
+传输（进行拆包）	
+> totalPackNum packNum appID CMID SESSION DATA 
+数据链路（获取应答）
+> 1，添加同步头 校验和 ， 2，发送之后获取ACK，等待10ms，没有ACK发送失败
+物理
+> bit流
+
+##### 收包流程 
+从物理层获取同步头
+获取一个包大小
+校验正确，应答ACK
+获得完整包送到会话层
+获取APPID,CMDID,数据，回应
+回调处理函数
+
+
+
 
 
 

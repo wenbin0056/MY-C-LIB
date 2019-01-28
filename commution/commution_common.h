@@ -8,8 +8,8 @@
 typedef struct
 {
 	unsigned short AppID;
-	unsigned short SessionID;
 	unsigned short PackCmdID;
+	unsigned short SessionID;	
 	
 }PACK_HEADER_T;
 

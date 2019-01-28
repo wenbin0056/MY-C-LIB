@@ -213,7 +213,9 @@ int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendB
 		return -1;		
 	}
 
-	CommutionStruct.packHeader[appId].AppID =appId;
+	CommutionStruct.TxpackHeader[appId].AppID =appId;
+	CommutionStruct.TxpackHeader[appId].PackCmdID =cmdID;
+	
 	memcpy(CommutionStruct.pTxBuff, SendBuff, SbuffLen);
 	CommutionStruct.TxBuffLen[appId] = SbuffLen;
 	CommutionStruct.pRxBuff[appId] = RxBuff;
@@ -249,7 +251,11 @@ int SESSION_sendPack(APP_ID_E appId)
 {
 	static unsigned short sessionID = 0;
 	sessionID++;
+	
+	CommutionStruct.TxpackHeader[appId].SessionID =sessionID;
+	
 	Transport_sendPack(appId, sessionID);
+	
 	return 0;
 }
 
@@ -345,6 +351,7 @@ int DATA_LINK_tryRecvFrame(APP_ID_E appId)
 int fun()
 {
 	Phy_recv_data(CommutionStruct.pRxBuff[appId], DATA_LINK_FRAME_SYNC_CODE_LEN);
+	 if()
 	
 }
 //======================PHY LAYER=====================
