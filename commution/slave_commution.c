@@ -297,6 +297,17 @@ int Transport_recvPack()
 	return 0;	
 }
 
+void TRANSPORT_parse_frame(char *pBuff, unsigned short totalPackNum)
+{
+	int i = 0;
+	char * p = NULL;
+	
+	for(i = 0; i < totalPackNum; i++)
+	{
+
+	}
+}
+
 //======================DATA LIN LAYER=====================
 // send frame by frame, if slave respond err, send again.
 // control bit flow 
@@ -428,7 +439,7 @@ START_RECV_FRAME:
 					
 					pBuff =  CommutionStruct.pRxBuff[appID];
 					
-					TRANSPORT_parse_frame(totalPackNum, pBuff);
+					TRANSPORT_parse_frame(pBuff, totalPackNum);
 					SESSION_parse_frame(totalPackNum, pBuff);					
 					PRESENTATION_parse_frame(pBuff);
 					
