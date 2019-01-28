@@ -14,14 +14,7 @@ typedef struct
 
 static COMMU_SLAVER_STATE_T commSlaverState;
 
-typedef enum
-{
-	USER_CMD_SENDDATA,
-	USER_CMD_REQUIREDATA,
 
-	USER_CMD_MAX,			
-		
-}USER_CMD_E;
 
 
 #define RX_PACK_HEAD_LEN	sizeof(PACK_HEADER_T)
@@ -50,6 +43,22 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 
 	ret = PRESENTATION_recvPack(appId);
 	
+	return ret;
+}
+
+
+int UserHandleCmd(USER_CMD_E cmdID)
+{
+	int ret = 0;
+	
+	siwtch(cmdID)
+	{
+		case USER_CMD_ID_START_WORK:
+			break;
+		default:
+			break;
+	}
+
 	return ret;
 }
 
@@ -227,6 +236,10 @@ int PRESENTATION_sendPack(APP_ID_E appId, USER_CMD_E cmdID, unsigned char *SendB
 	return 0;
 }
 
+int PRESENTATION_parse_frame()
+{
+	UserHandleCmd();
+}
 
 
 //======================SESSION LAYER=====================
@@ -385,8 +398,13 @@ int fun()
 	int ret = 0;
 	static int currentPackNum = 0;
 	char sync_buff[3] = {0};		
-	char *pBuff = CommutionStruct.pRxBuff[appID];
-
+	char *pBuff = NULL;
+	
+	
+START_RECV_FRAME:
+	
+	pBuff = CommutionStruct.pRxBuff[appID] + currentPackNum*FRAME_LEN;
+	
 	ret = Phy_recv_data(sync_buff, FRAME_SYNC_CODE_LEN);		
 	if(0 == ret)
 	{
@@ -395,16 +413,25 @@ int fun()
 			ret = Phy_recv_data(pBuff, FRAME_LEN);	
 			if(0 == ret)
 			{
+				currentPackNum++;
 				ret = DATA_LINK_check_frame(pBuff);
 				if(0 == ret)
 				{
+					DATA_LINK_sendAck();//todo
 					int totalPackNum = 0;
 					DATA_LINK_parse_frame(pBuff, &totalPackNum);
 					int i = 0;
-					for(i =1;i<totalPackNum;i++)
+					if(currentPackNum < totalPackNum)
 					{
-						
+						goto START_RECV_FRAME;
 					}
+					
+					pBuff =  CommutionStruct.pRxBuff[appID];
+					
+					TRANSPORT_parse_frame(totalPackNum, pBuff);
+					SESSION_parse_frame(totalPackNum, pBuff);					
+					PRESENTATION_parse_frame(pBuff);
+					
 				}
 				
 			}

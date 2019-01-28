@@ -54,6 +54,22 @@ int USER_SAMPLE_FUN(APP_ID_E appId)
 	return ret;
 }
 
+
+int UserHandleCmd(USER_CMD_E cmdID)
+{
+	int ret = 0;
+	
+	siwtch(cmdID)
+	{
+		case USER_CMD_ID_START_WORK:
+			break;
+		default:
+			break;
+	}
+
+	return ret;
+}
+
 //============================================================
 
 
