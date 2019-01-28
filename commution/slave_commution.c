@@ -345,13 +345,71 @@ int DATA_LINK_tryRecvFrame(APP_ID_E appId)
 	
 }
 
-#define _SYNC_CODE_LEN 3
+
+
+void DATA_LINK_parse_frame(char *pbuff, unsigned short * ptotalPackNum)
+{
+	*ptotalPackNum = (*(pbuff+2) | (*(pbuff+3) << 8))
+		
+	return ;
+}
+
+int DATA_LINK_check_frame(char *pbuff)
+{
+	int pos = 0;
+	unsigned char sum = 0;
+	
+	for(pos = 0; pos < FRAME_LEN; pos++)
+	{
+		if(pos == (FRAME_LEN - 1))
+		{
+			if(sum == *(pbuff+pos))
+			{
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		sum += *(pbuff+pos)
+	}
+}
+
+
 
 
 int fun()
 {
-	Phy_recv_data(CommutionStruct.pRxBuff[appId], DATA_LINK_FRAME_SYNC_CODE_LEN);
-	 if()
+	int appID = 0;
+	int ret = 0;
+	static int currentPackNum = 0;
+	char sync_buff[3] = {0};		
+	char *pBuff = CommutionStruct.pRxBuff[appID];
+
+	ret = Phy_recv_data(sync_buff, FRAME_SYNC_CODE_LEN);		
+	if(0 == ret)
+	{
+		if(FRAME_SYNC_CODE_0 == sync_buff[0] && FRAME_SYNC_CODE_1 ==  sync_buff[1] && FRAME_SYNC_CODE_2 ==  sync_buff[2])
+		{
+			ret = Phy_recv_data(pBuff, FRAME_LEN);	
+			if(0 == ret)
+			{
+				ret = DATA_LINK_check_frame(pBuff);
+				if(0 == ret)
+				{
+					int totalPackNum = 0;
+					DATA_LINK_parse_frame(pBuff, &totalPackNum);
+					int i = 0;
+					for(i =1;i<totalPackNum;i++)
+					{
+						
+					}
+				}
+				
+			}
+		}
+	}
 	
 }
 //======================PHY LAYER=====================

@@ -15,7 +15,7 @@
 会话层
 > appID CMID SESSION DATA ;SESSION：决定哪次会话的，收到的包进行会话ID校验
 传输（进行拆包）	
-> totalPackNum packNum appID CMID SESSION DATA 
+> totalPackNum（2BYTE） packNum（2BYTE） appID（2BYTE） CMID（2BYTE） SESSION（2BYTE） DATA 
 数据链路（获取应答）
 > 1，添加同步头 校验和 ， 2，发送之后获取ACK，等待10ms，没有ACK发送失败
 物理

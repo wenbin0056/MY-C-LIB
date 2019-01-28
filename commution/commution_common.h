@@ -30,7 +30,11 @@ typedef struct
 #define MAX_APPID 					10
 #define MAX_TX_BUFF_SIZE			1024
 #define MAX_RX_BUFF_SIZE			1024
-
+#define FRAME_SYNC_CODE_LEN 		3
+#define FRAME_SYNC_CODE_0 			0x55
+#define FRAME_SYNC_CODE_1 			0xf5
+#define FRAME_SYNC_CODE_2 			0x0a
+#define FRAME_LEN					56
 
 typedef struct
 {
