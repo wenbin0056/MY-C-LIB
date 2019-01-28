@@ -304,7 +304,7 @@ void TRANSPORT_parse_frame(char *pBuff, unsigned short totalPackNum)
 	
 	for(i = 0; i < totalPackNum; i++)
 	{
-
+		memcpy(pBuff+(i+1)*FRAME_LEN+RX_ACK_PACK_HEAD_LEN, pBuff+(i+1)*FRAME_LEN+RX_ACK_PACK_HEAD_LEN ,FRAME_LEN-RX_ACK_PACK_HEAD_LEN);
 	}
 }
 
