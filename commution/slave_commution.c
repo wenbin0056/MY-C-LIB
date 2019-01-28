@@ -112,7 +112,7 @@ int COMMUTION_WB_init(APP_ID_E appID)
 		{
 			printf("pthread_create rtsp_frame_task failed \n");
 			goto ERR;
-		} 		
+		}	
 	}
 
 	
@@ -269,7 +269,7 @@ int Transport_sendPack(APP_ID_E appId, unsigned short sessionID)
 
 int Transport_tryRecvPack(APP_ID_E appId)
 {
-	DATA_LINK_tryRecvAck(appId);
+	DATA_LINK_tryRecvFrame(appId);
 	return 0;	
 }
 
@@ -339,7 +339,14 @@ int DATA_LINK_tryRecvFrame(APP_ID_E appId)
 	
 }
 
+#define _SYNC_CODE_LEN 3
 
+
+int fun()
+{
+	Phy_recv_data(CommutionStruct.pRxBuff[appId], DATA_LINK_FRAME_SYNC_CODE_LEN);
+	
+}
 //======================PHY LAYER=====================
 
 int Phy_send_data(char *pbuff, unsigned int size)
